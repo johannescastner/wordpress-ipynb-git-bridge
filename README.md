@@ -7,7 +7,14 @@
 
 Notebook rendering can be previewed at https://jsvine.github.io/nbpreview/
 
-### Built on...
+### Planned features&trade;
+- Caching
+
+### Known caveats
+- Rendering interactive vizualizations is limited, this needs more testing.
+- Article heading must go into the wordpress document or you would have no title for navigation.
+
+### Built using...
 Inspired by https://github.com/gis-ops/wordpress-markdown-git  
 Rendering done via https://github.com/jsvine/nbpreview  
 Notebook styling taken from https://github.com/jsvine/notebookjs  
