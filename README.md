@@ -3,7 +3,7 @@
 
 
 ### Example usage:
-```[notebooksgit https://github.com/rasbt/matplotlib-gallery/blob/master/ipynb/heatmaps.ipynb]```  
+```[ipynb https://github.com/rasbt/matplotlib-gallery/blob/master/ipynb/heatmaps.ipynb]```  
 
 Notebook rendering can be previewed at https://jsvine.github.io/nbpreview/
 
