@@ -1,10 +1,10 @@
 // Credit goes to https://github.com/jsvine/nbpreview/blob/master/js/nbpreview.js, which this file is based on
-var $holder = document.querySelector("#main article .entry-content");
+var $holder = document.querySelector(".entry-content");
 
 // Uses shadow DOM to avoid wordpress css from interfering with the notebook
 let shadowroot = $holder.attachShadow({mode: 'open'});
 let style = document.createElement('style');
-style.innerHTML = ":host {all: initial; display: block;}";
+style.innerHTML = ":host {all: initial; display: block;} body {margin:0}";
 shadowroot.appendChild(style)
 
 let shadowbody = document.createElement("body");
@@ -33,7 +33,7 @@ function render_notebook(jsonstring) {
     for(const i in stylesheets) {
         linkElem = document.createElement('link');
         linkElem.setAttribute('rel', 'stylesheet');
-        linkElem.setAttribute('href', stylesheets[i]);
+        linkElem.setAttribute('href', WPURLS.siteurl + "/" + stylesheets[i]);
         shadowroot.append(linkElem);
     }
 
