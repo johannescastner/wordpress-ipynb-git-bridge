@@ -11,7 +11,7 @@ Notebook rendering can be previewed at https://jsvine.github.io/nbpreview/
 - Caching
 
 ### Known caveats
-- Rendering interactive vizualizations is limited, this needs more testing.
+- Rendering interactive visualizations is limited, this needs more testing.
 - Article heading must go into the wordpress document or you would have no title for navigation.
 
 ### Built using...
