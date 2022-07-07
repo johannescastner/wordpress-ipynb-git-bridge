@@ -9,10 +9,14 @@ Notebook rendering can be previewed at https://jsvine.github.io/nbpreview/
 
 ### Planned features&trade;
 - Caching
+- Parse and autoload post title, excerpt, tags, categories and slug from notebook metadata cell
+- Somehow grab publish_date and update_date from github
+- Auto sync the repository to the blog to make the relevant database state (aside from comments) reproducible
 
 ### Known caveats
 - Rendering interactive visualizations is limited, this needs more testing.
 - Article heading must go into the wordpress document or you would have no title for navigation.
+- Excerpt must be set manually
 
 ### Built using...
 Inspired by https://github.com/gis-ops/wordpress-markdown-git  
