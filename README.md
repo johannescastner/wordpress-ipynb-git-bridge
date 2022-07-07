@@ -14,6 +14,7 @@ Notebook rendering can be previewed at https://jsvine.github.io/nbpreview/
 - Auto sync the repository to the blog to make the relevant database state (aside from comments) reproducible
 
 ### Known caveats
+- On a throttled connection initial page load is painfully slow because document size expodes
 - Rendering interactive visualizations is limited, this needs more testing.
 - Article heading must go into the wordpress document or you would have no title for navigation.
 - Excerpt must be set manually
