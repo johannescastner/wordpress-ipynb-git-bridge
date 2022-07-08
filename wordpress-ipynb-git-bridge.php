@@ -10,6 +10,7 @@
 
 // Cache for 30 days
 $CACHE_DURATION_SECONDS = 60*60*24*30;
+$CACHE_DURATION_SECONDS = -1;
 
 function base64_to_jpeg( $base64_string, $file_extension ) {
 
@@ -63,10 +64,25 @@ function optimize_json($json) {
             }
         }
     }
-    //var_dump($json);
+
+    // If metadata cell exists, remove it
+    if(0 === strcmp(rmnewline($json["cells"][0]["source"][0]), "%META")) {
+        // Metadata cell present
+        array_shift($json["cells"]);
+    }
+
     return json_encode($json);
 }
 
+function download_from_github($raw_url) {
+    // Convert github url to raw.githubusercontent.com url
+    $raw_url = str_replace("github.com", "raw.githubusercontent.com", $raw_url);
+    $raw_url = str_replace("/blob/", "/", $raw_url);
+
+    // Download json from github
+    $result = wp_remote_get($raw_url);
+    return $result["body"];
+}
 
 
 function inject_notebook($atts) {
@@ -96,22 +112,20 @@ function inject_notebook($atts) {
 
         if(!file_exists($cache_storage_location . $cachefilename)) {
 
-            // Convert github url to raw.githubusercontent.com url
-            $raw_url = str_replace("github.com", "raw.githubusercontent.com", reset($atts));
-            $raw_url = str_replace("/blob/", "/", $raw_url);
-
-            // Download json from github
-            $result = wp_remote_get($raw_url);
+            $result = download_from_github(reset($atts));
             echo "Render is -42 seconds old";
 
+            // Update post metadata
+            parse_metadata(get_the_ID(), $result);
+
             // Optimize json
-            $optimized_json = optimize_json($result["body"]);
+            $optimized_json = optimize_json($result);
             file_put_contents($cache_storage_location . $cachefilename, $optimized_json);
+
         } else {
             $optimized_json = file_get_contents($cache_storage_location . $cachefilename);
         }
 
-        $jsontext = $result["body"];
         $jsontext = $optimized_json;
         $jsontext = str_replace("\n", "", $jsontext);
         $jsontext = json_encode($jsontext);
@@ -154,6 +168,112 @@ function load_js_files() {
     wp_localize_script('nbpreview', 'WPURLS', array( 'siteurl' => get_option('siteurl') ));
 }
 
+// this function makes all posts in the default category private
+ 
+// source https://gist.github.com/mrbobbybryant/a18588f86b12fa71224b
+function parse_shortcode_atts( $content, $shortcode ) {
+
+	//Returns a sting consisting of all registered shortcodes.
+	$pattern = get_shortcode_regex();
+
+	//Checks the post content to see if any shortcodes are present.
+	$shortcodes = preg_match_all( '/'. $pattern .'/s', $content, $matches );
+
+	//Check to see which key our Attributes are sotred in.
+	$shortcode_key = array_search( $shortcode, $matches[2] );
+
+	//Create an new array of atts for our shortcode only.
+	$shortcode_atts[] = $matches[3][$shortcode_key];
+
+	//Ensure we don't have an empty strings
+	$shortcode_atts= array_filter( $shortcode_atts );
+
+	if ( ! empty( $shortcode_atts ) ) {
+
+		//Pull out shortcode attributes based on the above key.
+		$shortcode_atts = shortcode_parse_atts( implode( ',', $shortcode_atts ) );
+
+		//Remove random commas from last value
+		$shortcode_atts = array_map( function ( $att ) {
+			return $att = str_replace( ',', '', $att );
+		}, $shortcode_atts );
+
+		$tags = array();
+
+		foreach ( $shortcode_atts as $atts ) {
+			$temp             = explode( '=', $atts );
+			$tags[ $temp[0] ] = str_replace( '"', '', $temp[1] );
+		}
+		return $tags;
+	}
+
+	//If no attributes are returned, then an ID Att isn't present.
+	return false;
+}
+function rmnewline($string) {
+    return preg_replace('/\s+/', ' ', trim($string));
+}
+
+function get_or_create_category($string) {
+    $catid = get_cat_ID($string);
+    if(0 === $catid) {
+        wp_insert_term( $string, 'category');
+        $catid = get_cat_ID($string);
+    }
+    return $catid;
+}
+
+function parse_metadata($post_id, $jsonstring = false) {
+    if( ! ( wp_is_post_revision( $post_id) || wp_is_post_autosave( $post_id ) ) ) {
+
+        $result = parse_shortcode_atts(get_post($post_id)->post_content, "ipynb");
+        if(count($result) != 1) {
+            // Can't work with multiple shortcodes
+            return;
+        }
+        
+        if(false === $jsonstring) {
+            $notebook_url = array_key_first($result);
+            $jsonstring = download_from_github($notebook_url);
+        }
+        $json = json_decode($jsonstring, true);
+
+        if(0 != strcmp(rmnewline($json["cells"][0]["source"][0]), "%META")) {
+            // No metadata cell present
+            echo "no metadata cell present"; return;
+        }
+
+        $post_update = array(
+            'ID'         => $post_id,
+        );
+
+        foreach($json["cells"][0]["source"] as $line) {
+            $exploded = explode("=", $line);
+            $key = $exploded[0];
+            $value = $exploded[1];
+
+            switch($key) {
+                case "title": $post_update += array("post_title" => $value); break;
+                case "excerpt": $post_update += array("post_excerpt" => $value); break;
+                case "tags": $post_update += array("tags_input" => explode(",", $value)); break;
+                case "categories": 
+                    $catids = array_map("get_or_create_category", explode(",", $value));
+                    $post_update += array("post_category" => $catids);
+                    break;
+                case "slug": $post_update += array("tags_input" => explode(",", $value)); break;
+            }
+        }
+
+        remove_action( 'save_post', 'parse_metadata' );
+        wp_update_post( $post_update );
+        add_action( 'save_post', 'parse_metadata' );
+    }
+
+}
+
+add_action( 'save_post', 'parse_metadata' );
+
 add_shortcode('ipynb', 'inject_notebook', 10000);
+
 
 
