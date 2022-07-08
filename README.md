@@ -1,4 +1,4 @@
-# wordpress-ipynb-git-bridge
+ # wordpress-ipynb-git-bridge
 `wordpress-ipynb-git-bridge` is a WordPress plugin for importing .ipynb notebooks from github into a wordpress blog post.
 
 
@@ -8,13 +8,14 @@
 Notebook rendering can be previewed at https://jsvine.github.io/nbpreview/
 
 ### Planned features&trade;
-- Caching
-- Parse and autoload post title, excerpt, tags, categories and slug from notebook metadata cell
-- Somehow grab publish_date and update_date from github
-- Auto sync the repository to the blog to make the relevant database state (aside from comments) reproducible
+- [x] Caching
+- [ ] Parse and autoload post title, excerpt, tags, categories and slug from notebook metadata cell
+- [ ] Somehow grab publish_date and update_date from github
+- [ ] Auto sync the repository to the blog to make the relevant database state (aside from comments) reproducible
+- [x] Extract b64 images and store them statically
 
 ### Known caveats
-- On a throttled connection initial page load is painfully slow because document size expodes
+- <s>On a throttled connection initial page load is painfully slow because document size expodes</s>
 - Rendering interactive visualizations is limited, this needs more testing.
 - Article heading must go into the wordpress document or you would have no title for navigation.
 - Excerpt must be set manually
