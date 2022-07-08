@@ -39,3 +39,5 @@ Every key is optional. Metadata will overwrite fields that were manually set in 
 Inspired by https://github.com/gis-ops/wordpress-markdown-git  
 Rendering done via https://github.com/jsvine/nbpreview  
 Notebook styling taken from https://github.com/jsvine/notebookjs  
+https://gist.github.com/mrbobbybryant/a18588f86b12fa71224b
+
