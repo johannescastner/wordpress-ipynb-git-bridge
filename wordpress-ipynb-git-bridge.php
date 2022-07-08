@@ -226,7 +226,13 @@ function get_or_create_category($string) {
 function parse_metadata($post_id, $jsonstring = false) {
     if( ! ( wp_is_post_revision( $post_id) || wp_is_post_autosave( $post_id ) ) ) {
 
-        $result = parse_shortcode_atts(get_post($post_id)->post_content, "ipynb");
+	$post_content = get_post($post_id)->post_content;
+
+        if (false === strpos($post_content, '[ipynb') ) {
+            return;
+        }
+	    
+        $result = parse_shortcode_atts($post_content, "ipynb");
         if(count($result) != 1) {
             // Can't work with multiple shortcodes
             return;
