@@ -34,6 +34,7 @@ Every key is optional. Metadata will overwrite fields that were manually set in 
 - Cache has to be reset manually by clearing wp-content/uploads/ipynb-media/*
 - raw.githubusercontent.com caches files for 5 minutes, making manual clearing the cache after an update inconvenient
 - When images are removed from a notebook that has been optimized previously, corresponding .webp files can become orphant. Fix this by periodically clearing ipynb-media directory.
+- Titles must be unique since slugs depend on them
 
 ### Built using...
 Inspired by https://github.com/gis-ops/wordpress-markdown-git  
