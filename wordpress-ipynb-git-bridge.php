@@ -10,11 +10,12 @@
 
 // Cache for 30 days
 $CACHE_DURATION_SECONDS = 60*60*24*30;
-$CACHE_DURATION_SECONDS = -1;
+$STORAGE_LOCATION = plugin_dir_path( __FILE__ ) . "../../uploads/ipynb-media/";
 
 function base64_to_jpeg( $base64_string, $file_extension ) {
 
-    $storage_location = plugin_dir_path( __FILE__ ) . "../../uploads/ipynb-media/";
+    global $STORAGE_LOCATION;
+    $storage_location = $STORAGE_LOCATION;
 
     // Create folder if not exists
     if (!file_exists($storage_location)) {
@@ -113,13 +114,20 @@ function inject_notebook($atts) {
         if(!file_exists($cache_storage_location . $cachefilename)) {
 
             $result = download_from_github(reset($atts));
-            echo "Render is -42 seconds old";
+            echo "Render is fresh";
 
             // Update post metadata
             parse_metadata(get_the_ID(), $result);
 
             // Optimize json
             $optimized_json = optimize_json($result);
+            
+            global $STORAGE_LOCATION;
+            // Create folder if not exists
+            if (!file_exists($storage_location)) {
+                 mkdir($STORAGE_LOCATION, 0777, true);
+            }
+
             file_put_contents($cache_storage_location . $cachefilename, $optimized_json);
 
         } else {
@@ -246,7 +254,7 @@ function parse_metadata($post_id, $jsonstring = false) {
 
         if(0 != strcmp(rmnewline($json["cells"][0]["source"][0]), "%META")) {
             // No metadata cell present
-            echo "no metadata cell present"; return;
+            return;
         }
 
         $post_update = array(
