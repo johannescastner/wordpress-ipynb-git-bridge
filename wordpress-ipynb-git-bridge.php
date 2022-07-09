@@ -231,6 +231,51 @@ function get_or_create_category($string) {
     return $catid;
 }
 
+// Source: https://stackoverflow.com/questions/2955251/php-function-to-make-slug-url-string
+function slugify($text, string $divider = '-')
+{
+  // replace non letter or digits by divider
+  $text = preg_replace('~[^\pL\d]+~u', $divider, $text);
+
+  // transliterate
+  $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+
+  // remove unwanted characters
+  $text = preg_replace('~[^-\w]+~', '', $text);
+
+  // trim
+  $text = trim($text, $divider);
+
+  // remove duplicate divider
+  $text = preg_replace('~-+~', $divider, $text);
+
+  // lowercase
+  $text = strtolower($text);
+
+  if (empty($text)) {
+    return 'n-a';
+  }
+
+  return $text;
+}
+
+//Source: https://gist.github.com/tallesairan/3ad2f37a73ae1a1f5a2d704e98c9556c
+function post_exists_by_slug( $post_slug,$type = 'post') {
+  $args_posts = array(
+      'post_type'      => $type,
+      'name'           => $post_slug,
+      'posts_per_page' => 1,
+  );
+  $loop_posts = new WP_Query( $args_posts );
+  if ( ! $loop_posts->have_posts() ) {
+      return false;
+  } else {
+      $loop_posts->the_post();
+
+      return $loop_posts->post->ID;
+  }
+}
+
 function parse_metadata($post_id, $jsonstring = false) {
     if( ! ( wp_is_post_revision( $post_id) || wp_is_post_autosave( $post_id ) ) ) {
 
@@ -267,7 +312,11 @@ function parse_metadata($post_id, $jsonstring = false) {
             $value = $exploded[1];
 
             switch($key) {
-                case "title": $post_update += array("post_title" => $value); break;
+                case "title":
+                    $post_update += array("post_title" => $value);
+                    $post_update += array("post_name" => slugify($value));
+                    break;
+
                 case "excerpt": $post_update += array("post_excerpt" => $value); break;
                 case "tags": $post_update += array("tags_input" => explode(",", $value)); break;
                 case "categories": 
