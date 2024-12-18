@@ -14,7 +14,7 @@ This repository contains the source code for the Towards People website, featuri
 
 ## File Structure
 
-
+```plaintext
 towards-people/
 ├── backend/                   # Python backend (FastAPI)
 │   ├── app/                   # Application code
@@ -47,3 +47,5 @@ towards-people/
 ├── .gitignore                 # Git ignore file
 ├── README.md                  # Project documentation
 └── docker-compose.yml         # Optional: Compose for managing services
+```
+
