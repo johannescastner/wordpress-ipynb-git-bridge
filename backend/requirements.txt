@@ -2,4 +2,7 @@ fastapi==0.95.2  # Specify a compatible version
 uvicorn[standard]==0.22.0  # Include optional dependencies like `watchgod`
 nbformat==5.9.0  # For working with Jupyter Notebooks
 nbconvert==7.8.0  # Convert Jupyter Notebooks to HTML
+nbformat==5.9.0
+nbconvert==7.8.0
+markdown==3.5.0
 

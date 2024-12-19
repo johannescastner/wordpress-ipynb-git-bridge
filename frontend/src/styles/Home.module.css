@@ -1,0 +1,42 @@
+.hero {
+  position: relative;
+  text-align: center;
+  color: white;
+}
+
+.hero img {
+  width: 100%;
+  height: auto;
+}
+
+.heroText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ctaButton {
+  padding: 10px 20px;
+  background-color: #ff6700;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.about, .principles, .caseStudies, .footer {
+  padding: 50px;
+  text-align: center;
+}
+
+.imageBlock img {
+  width: 100%;
+  height: auto;
+}
+
+.footerContent {
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+}
