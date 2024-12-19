@@ -41,6 +41,46 @@ Towards People is building a **Collective Intelligence System** that integrates 
 
 ---
 
+## Features to Implement
+
+We have outlined the following features and enhancements to be implemented in future iterations of the project:
+
+1. **Admin Section**  
+   - Develop an `/admin` portal for uploading Jupyter Notebooks.  
+   - Add secure authentication for admin users.
+
+2. **Blog Automation**  
+   - Enable automatic blog creation from uploaded `.ipynb` files.  
+   - Store blogs in a database or as static files.
+
+3. **Google Cloud Deployment**  
+   - Deploy frontend and backend to Google Cloud Run.  
+   - Set up Cloud Storage and a Load Balancer for scalability and high availability.  
+
+4. **Dynamic Blog Features**  
+   - Add categories and tagging functionality for blog posts.  
+   - Enable user comments for each blog post.
+
+5. **User Surveillance and Analytics**  
+   - Track user activity on the website.  
+   - Stream user behavior data to a BigQuery warehouse.  
+   - Build a visualization dashboard in Apache Superset.
+
+6. **Commenting and Likes**  
+   - Implement a commenting system for blog posts with threaded replies.  
+   - Add a like button with a counter for each blog post.  
+
+7. **Social Integration**  
+   - Allow users to log in via LinkedIn or Facebook to comment and like posts.  
+   - Add social sharing buttons for LinkedIn and Facebook on blog posts.
+
+---
+
+### Notes:
+- The **Apache Superset** dashboard and **BigQuery data warehousing** are part of a separate repository/project.
+- Details for each feature will be worked out as development progresses.
+
+
 ## **File Structure**
 
 ```plaintext
