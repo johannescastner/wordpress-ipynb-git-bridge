@@ -27,17 +27,87 @@ Towards People is building a **Collective Intelligence System** that integrates 
 
 ---
 
-## **Where We Are**
-- **Frontend**: Next.js frontend is live on [http://localhost:3000](http://localhost:3000).
-  - Core pages include:
-    - `index.js` (landing page)
-    - `blog.js` (blog listing)
-- **Backend**: FastAPI backend is running on [http://localhost:8000](http://localhost:8000).
-  - Test endpoint: `/` responds with `{"message": "Welcome to Towards People API"}`.
-  - Planned endpoints include:
-    - `/items`: Placeholder API routes for demonstration.
-    - `/blog`: Blog-related API routes (not yet implemented).
-- **Blogging System**: Jupyter-to-Markdown conversion is partially tested but functional.
+## Current State of the Project
+
+### Frontend
+- The **Next.js frontend** is live on [http://localhost:3000](http://localhost:3000).
+- Key frontend features:
+  - **Landing page (`index.js`)**: Provides the main entry point for users.
+  - **Blog listing page (`blog.js`)**: Displays a list of all blogs retrieved from the backend.
+- Challenges:
+  - Initially, images were stored in the database as base64-encoded strings. Large image sizes caused performance issues when rendering them on the frontend.
+  - Future updates will pull images directly from the Google Cloud Storage bucket.
+
+### Backend
+- The **FastAPI backend** is live on [http://localhost:8000](http://localhost:8000).
+- Key backend features:
+  - **Blog endpoints**:
+    - `/blog`: Fetches all blogs.
+    - `/blog/{slug}`: Fetches a single blog by its unique slug.
+  - **Blogging system**:
+    - Converts Jupyter Notebooks into Markdown format for blogs.
+    - Initially stored both content and images (base64-encoded) in the database. Now uses Google Cloud Storage for image hosting.
+- Progress:
+  - The `add_blogs.py` script automates the process of uploading Jupyter Notebooks to the blog system. This includes:
+    - Converting notebooks to Markdown.
+    - Extracting and uploading images to a Google Cloud Storage bucket.
+    - Storing blog content in the database with references to image URLs.
+
+### Google Cloud Storage Integration
+- A bucket (`towards_people_blog_images`) was created to host blog images.
+- Images are organized in folders named after their corresponding blog slugs.
+- Challenge:
+  - The bucket cannot currently be made publicly accessible due to **IAM policies** enforced at the organization level.
+  - Temporary attempts to use signed URLs have also failed due to restricted permissions (e.g., `iam.disableServiceAccountKeyCreation`).
+
+### Blocking Issues
+1. **Public Access to Images**:
+   - The bucket should ideally be publicly readable to allow the frontend to directly access images.
+   - Organization-level restrictions prevent enabling public access or generating signed URLs.
+2. **Next Steps on IAM Policies**:
+   - Collaborate with administrators to:
+     - Enable public access for the bucket.
+     - Or allow service account key creation for signed URLs.
+
+---
+
+## Goals for the `add_blogs.py` Functionality
+
+### Current State
+- The `add_blogs.py` script currently processes Jupyter Notebooks by:
+  - Converting them to Markdown.
+  - Extracting images and uploading them to the Google Cloud Storage bucket.
+  - Storing blog content and image URLs in the database.
+
+### Future Plans
+- Transition `add_blogs.py` into a **Google Cloud Function** to streamline blog entry creation.
+- Features to include:
+  - **Admin Page**:
+    - Accessible via Google account login.
+    - Allow authorized users to manage blog uploads.
+  - **Upload Options**:
+    - Upload a Jupyter Notebook directly from a local computer.
+    - Provide a URL pointing to an online Jupyter Notebook (e.g., Google Colab).
+    - Support other document types like Microsoft Word and Google Docs.
+  - **Automated Processing**:
+    - Convert uploaded documents into Markdown.
+    - Extract and upload images to the Cloud Storage bucket.
+    - Store all content in the database.
+
+### Long-Term Goals
+- Develop a user-friendly **admin interface** for bloggers.
+- Support a variety of document formats for blog creation.
+- Enhance integration with cloud services to ensure scalability and efficiency.
+
+---
+
+## Next Steps
+1. Resolve the Google Cloud Storage bucket access issue:
+   - Enable public access or resolve signed URL permissions.
+2. Test the backend integration once access is resolved.
+3. Refactor `add_blogs.py` into a scalable cloud function.
+4. Build the admin interface to enable easier blog management.
+5. Expand supported document formats for blog creation.
 
 ---
 
