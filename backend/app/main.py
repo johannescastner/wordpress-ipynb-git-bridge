@@ -1,6 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from sqlalchemy.orm import Session
+from app.services.database import get_db
+from app.services.models import Blog
 
 # Initialize the FastAPI app
 app = FastAPI()
@@ -27,18 +30,16 @@ def read_root():
 def health_check():
     return {"status": "healthy"}
 
-# Blog endpoint
+# Blog endpoint to fetch all blogs
 @app.get("/blog")
-def get_blogs():
-    return [
-        {
-            "id": 1,
-            "title": "Diversity Assignments",
-            "content": "A closer look at diversity in team assignments and its impact.",
-        },
-        {
-            "id": 2,
-            "title": "Ethical AI",
-            "content": "Exploring the principles of ethical AI and how it shapes our world.",
-        },
-    ]
+def get_blogs(db: Session = Depends(get_db)):
+    blogs = db.query(Blog).all()
+    return blogs
+
+# Blog endpoint to fetch a blog by slug
+@app.get("/blog/{slug}")
+def get_blog(slug: str, db: Session = Depends(get_db)):
+    blog = db.query(Blog).filter(Blog.slug == slug).first()
+    if not blog:
+        raise HTTPException(status_code=404, detail="Blog not found")
+    return blog

@@ -11,4 +11,9 @@ markdown==3.5.0
 
 # Additional dependencies
 python-multipart  # For handling file uploads and form data
+python-dotenv==1.0.0  # Load environment variables from a .env file
+psycopg2-binary==2.9.7
+
+# Google Cloud dependencies
+google-cloud-storage==2.10.0  # Required for interacting with Google Cloud Storage
 
