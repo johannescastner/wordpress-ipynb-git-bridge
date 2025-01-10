@@ -1,0 +1,10 @@
+
+/*
+Hide the execution order elements on smaller screens
+*/
+
+@media (max-width: 767px) {                  
+   ::before {
+      display: none;
+   }
+}
