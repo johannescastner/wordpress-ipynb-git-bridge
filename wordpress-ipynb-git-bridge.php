@@ -76,12 +76,20 @@ function optimize_json($json) {
 }
 
 function download_from_github($raw_url) {
-    // Convert github url to raw.githubusercontent.com url
+    // Convert GitHub URL to raw URL
     $raw_url = str_replace("github.com", "raw.githubusercontent.com", $raw_url);
     $raw_url = str_replace("/blob/", "/", $raw_url);
 
-    // Download json from github
+    error_log("Fetching notebook from: " . $raw_url); // Debugging log
+
+    // Fetch the notebook
     $result = wp_remote_get($raw_url);
+    if (is_wp_error($result)) {
+        error_log("Error fetching notebook: " . $result->get_error_message());
+        return null;
+    }
+
+    error_log("Notebook fetched successfully.");
     return $result["body"];
 }
 
